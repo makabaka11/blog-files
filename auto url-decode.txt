@@ -1,0 +1,33 @@
+import urllib.parse
+import re
+
+def auto_urldecode(s: str, max_rounds: int = 5) -> str:
+    """
+    自动识别并解码字符串中的 URL 编码
+    支持多层嵌套编码，最多解码 max_rounds 次
+    """
+    result = s
+    for _ in range(max_rounds):
+        # 判断是否仍存在 URL 编码特征
+        if not re.search(r'%[0-9a-fA-F]{2}', result):
+            break
+
+        decoded = urllib.parse.unquote(result)
+
+        # 若本轮解码无变化，则停止
+        if decoded == result:
+            break
+
+        result = decoded
+
+    return result
+
+
+if __name__ == "__main__":
+    encoded_str = input("请输入待解码的字符串：\n").strip()
+    decoded_str = auto_urldecode(encoded_str)
+
+    print("\n解码结果：\n")
+    print(decoded_str)
+
+    input("\n按回车键退出...")
